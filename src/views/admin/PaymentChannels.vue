@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { adminAPI } from '@/api/admin'
 import type { AdminPaymentChannel } from '@/api/types'
 import { getImageUrl } from '@/utils/image'
+import { resolveOkpayConfiguredCoin } from '@/utils/paymentChannelDisplay'
 import IdCell from '@/components/IdCell.vue'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -133,6 +134,10 @@ const resolveChannelTypeDisplay = (channel: AdminPaymentChannel) => {
   if (channel.provider_type === 'epusdt') {
     const tradeType = String(channel.config_json?.trade_type || '').trim()
     return tradeType || 'usdt.trc20'
+  }
+  if (channel.provider_type === 'okpay') {
+    const coin = resolveOkpayConfiguredCoin(channel.config_json)
+    return coin || channelTypeLabel(channel.channel_type)
   }
   if (channel.provider_type === 'dujiaopay') {
     const tokenID = String(channel.config_json?.token_id || channel.channel_type || '').trim()

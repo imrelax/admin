@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { adminAPI } from '@/api/admin'
 import type { AdminMemberLevel } from '@/api/types'
 import { getLocalizedText } from '@/utils/format'
+import { resolveOkpayChannelTypeFromConfig } from '@/utils/paymentChannelDisplay'
 import MediaPicker from '@/components/admin/MediaPicker.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -948,6 +949,9 @@ watch(
           applyTokenpayConfig(channel.config_json)
           applyOkpayConfig(channel.config_json)
           applyDujiaoPayConfig(channel.config_json)
+          if (channel.provider_type === 'okpay' && !String(form.channel_type || '').trim()) {
+            form.channel_type = resolveOkpayChannelTypeFromConfig(channel.config_json)
+          }
         } else {
           resetAllConfigs()
         }
